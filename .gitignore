@@ -1,0 +1,17 @@
+# Backups
+*.backup
+*.bak
+*backup*/
+*.backup-*/
+
+# Logs
+*.log
+logs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.swp
