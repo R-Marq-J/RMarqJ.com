@@ -1,0 +1,30 @@
+# Manual deploy from Windows to your Proxmox webserver using SSH/SCP.
+# Copy this file to deploy-manual.ps1 and edit the variables below.
+
+$ErrorActionPreference = "Stop"
+
+$DeployUser = "deploy"
+$DeployHost = "YOUR_SERVER_IP_OR_HOSTNAME"
+$DeployPath = "/var/www/rmarqj.com"
+$ArchiveName = "rmarqj-site-deploy.tar.gz"
+
+if ($DeployHost -eq "YOUR_SERVER_IP_OR_HOSTNAME") {
+    Write-Host "Edit DeployHost before running this script." -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Creating deploy archive..." -ForegroundColor Cyan
+if (Test-Path $ArchiveName) { Remove-Item $ArchiveName -Force }
+
+tar -czf $ArchiveName index.html about work blog projects testimonials contact css js AI_CONTEXT.md README.md WORKFLOW.md
+
+Write-Host "Uploading archive..." -ForegroundColor Cyan
+scp $ArchiveName "$DeployUser@$DeployHost:/tmp/$ArchiveName"
+
+Write-Host "Extracting on server..." -ForegroundColor Cyan
+ssh "$DeployUser@$DeployHost" "mkdir -p '$DeployPath' && tar -xzf '/tmp/$ArchiveName' -C '$DeployPath' && rm '/tmp/$ArchiveName'"
+
+Write-Host "Cleaning local archive..." -ForegroundColor Cyan
+Remove-Item $ArchiveName -Force
+
+Write-Host "Deploy complete." -ForegroundColor Green

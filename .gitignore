@@ -16,3 +16,5 @@ Thumbs.db
 *.tmp
 *.swp
 deploy.sh
+
+work/
